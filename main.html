@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucy's PhD — The Defense Board Game</title>
+  <meta name="description" content="A board game celebrating Lucy's PhD defense: roll the dice, survive 15 real events from her PhD, and reach the thesis defense." />
+  <!--
+    Lucy's PhD game — proof of concept.
+    Tech stack: pure HTML + CSS + vanilla JavaScript. No external libraries or
+    frameworks are used, so the game works fully offline (important for a
+    presentation venue) with zero build step.
+
+    Files:
+      - main.html         page structure (board, dice, modal, overlays)
+      - assets/script.js  all game logic (state, dice roll animation,
+                          movement, deterministic event schedule, win/lose)
+      - assets/style.css  layout, tiles, animations (dice, movement, modal)
+  -->
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🎓 Lucy's PhD</h1>
+    <p class="tagline">The board game to her thesis defense</p>
+    <button id="restartBtn" class="btn ghost" title="Restart the game from tile 1">↺ Restart</button>
+  </header>
+
+  <section class="statusbar">
+    <div class="status">
+      <span id="tileLabel" class="tile-label">Tile 1 / 48</span>
+      <span id="progressLabel" class="progress-label">0% of the way to the defense</span>
+    </div>
+    <div class="dice-zone" aria-live="polite">
+      <div id="dice" class="dice face-1" role="img" aria-label="Dice showing 1">
+        <span class="pip tl"></span><span class="pip tr"></span><span class="pip c"></span>
+        <span class="pip ml"></span><span class="pip mr"></span><span class="pip bl"></span><span class="pip br"></span>
+      </div>
+      <div class="dice-side">
+        <button id="rollBtn" class="btn primary">Roll the dice (1–6)</button>
+        <p class="hint">Click anywhere to roll</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="board-wrap">
+    <ol id="board" class="board" aria-label="Game board with 48 tiles"></ol>
+    <div class="goal" aria-hidden="true">
+      <span class="goal-emoji">🏆</span>
+      <span class="goal-text">Thesis<br />Defense</span>
+    </div>
+  </main>
+
+  <!-- Event modal -->
+  <div id="modal" class="overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div id="modalBadge" class="modal-badge"></div>
+      <h2 id="modalTitle"></h2>
+      <p id="modalText"></p>
+      <p id="modalEffect" class="modal-effect"></p>
+      <button id="modalBtn" class="btn primary">Continue</button>
+    </div>
+  </div>
+
+  <!-- Win overlay -->
+  <div id="winOverlay" class="overlay win" hidden>
+    <div class="win-card">
+      <div class="confetti" aria-hidden="true"></div>
+      <h2>🎉 Congratulations, Lucy! 🎉</h2>
+      <p class="win-sub">She did it — the thesis is defended and the PhD is complete.</p>
+      <p id="winStats" class="win-stats"></p>
+      <button id="winBtn" class="btn primary">Play again</button>
+    </div>
+  </div>
+
+  <!-- Lose overlay -->
+  <div id="loseOverlay" class="overlay lose" hidden>
+    <div class="lose-card">
+      <h2>😵 Lucy is out of the game…</h2>
+      <p class="lose-sub" id="loseSub"></p>
+      <p class="lose-note">But Lucy is tougher than any fieldwork. Take her back to tile 1 and try again!</p>
+      <button id="loseBtn" class="btn primary">Back to tile 1</button>
+    </div>
+  </div>
+
+  <script src="assets/script.js"></script>
+</body>
+</html>
