@@ -82,17 +82,43 @@ body {
 .btn.ghost:hover { background: rgba(255, 255, 255, 0.06); }
 
 /* ---------- status bar + dice ---------- */
+/* The dice and the roll button sit side by side, centered. */
 .statusbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 18px;
+  justify-content: center;
+  gap: 22px;
   flex-wrap: wrap;
   background: var(--bg-soft);
   border: 1px solid var(--card-edge);
   border-radius: 14px;
-  padding: 10px 18px;
+  padding: 12px 22px;
 }
+.dice-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.hint {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 13px;
+}
+
+/* The die: a 58px rounded square. Pips are absolutely positioned inside. */
+.dice {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #ffffff, #d7e3f4);
+  border: 1px solid #b9c8e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+/* While rolling, the die wobbles/rotates to fake a physical roll. */
+.dice.rolling { animation: dice-rolling 0.18s linear infinite; }
 
 /* Standard die pip positions on a 58px square:
    tl tr  |  ml mr  |  bl br  +  c (center)
@@ -172,21 +198,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(var(--tile-size) * 0.30);
+  font-size: calc(var(--tile-size) * 0.42);
   font-weight: 700;
   color: var(--ink-dim);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-/* Path continuity: every tile is a segment of the snake path;
-   give the grid a subtle "track" look with zebra rows. */
-.tile::after {
-  content: "";
-  position: absolute;
-  inset: auto;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(157, 177, 209, 0.35);
+/* Path continuity: each tile shows an arrow pointing along the
+   journey, so the snake path reads as one continuous road. */
+.tile-arrow {
+  line-height: 1;
+  opacity: 0.85;
+  text-shadow: 0 0 6px rgba(79, 195, 247, 0.35);
+}
+.tile.tile-current .tile-arrow {
+  color: var(--accent);
+  opacity: 1;
+  text-shadow: 0 0 8px rgba(79, 195, 247, 0.7);
 }
 
 .tile .event-mark {
@@ -198,6 +225,26 @@ body {
 }
 .tile.has-event { border-color: rgba(179, 157, 255, 0.7); }
 .tile.has-event .event-mark { opacity: 1; }
+/* Tiles are colored by the kind of event they trigger:
+   red = setback (pushed back), yellow = story (no effect), green = boost. */
+.tile.tile-bad {
+  background: linear-gradient(160deg, #3a2030, #2a1622);
+  border-color: rgba(255, 107, 107, 0.75);
+  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.25) inset;
+}
+.tile.tile-bad .event-mark { filter: drop-shadow(0 0 4px rgba(255, 107, 107, 0.6)); }
+.tile.tile-neutral {
+  background: linear-gradient(160deg, #3a3320, #2a2416);
+  border-color: rgba(255, 209, 102, 0.75);
+  box-shadow: 0 0 0 1px rgba(255, 209, 102, 0.25) inset;
+}
+.tile.tile-neutral .event-mark { filter: drop-shadow(0 0 4px rgba(255, 209, 102, 0.6)); }
+.tile.tile-good {
+  background: linear-gradient(160deg, #1f3a2a, #162a1f);
+  border-color: rgba(67, 201, 123, 0.75);
+  box-shadow: 0 0 0 1px rgba(67, 201, 123, 0.25) inset;
+}
+.tile.tile-good .event-mark { filter: drop-shadow(0 0 4px rgba(67, 201, 123, 0.6)); }
 .tile.is-start {
   border-color: var(--good);
   box-shadow: 0 0 0 2px rgba(67, 201, 123, 0.4) inset;
@@ -273,11 +320,13 @@ body {
 .overlay[hidden] { display: none; }
 
 .modal {
-  width: min(480px, 100%);
+  width: min(640px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
   background: linear-gradient(180deg, #20345a, #17263f);
   border: 1px solid var(--card-edge);
-  border-radius: 18px;
-  padding: 26px 28px;
+  border-radius: 20px;
+  padding: 34px 40px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
   text-align: center;
 }
@@ -311,8 +360,9 @@ body {
   font-size: 24px;
   line-height: 1.25;
 }
-.modal p { margin: 0 0 12px; color: var(--ink); line-height: 1.5; }
-.modal-effect { font-weight: 700; font-size: 15px; margin-bottom: 18px !important; }
+.modal h2 { font-size: 28px; }
+.modal p { margin: 0 0 14px; color: var(--ink); line-height: 1.6; font-size: 17px; }
+.modal-effect { font-weight: 700; font-size: 17px; margin-bottom: 22px !important; }
 .modal-effect.bad { color: var(--bad); }
 .modal-effect.good { color: var(--good); }
 .modal-effect.neutral { color: var(--neutral); }

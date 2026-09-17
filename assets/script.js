@@ -45,12 +45,18 @@
   const DICE_FLIP_MS = 65;      // dice face flicker speed
   const DICE_FLIPS = 9;         // flickers before the final face
 
-  // Deterministic roll script: every roll lands exactly on the next
-  // event tile, and the final roll reaches the goal (tile 48).
-  // The full path: 1 ->5 -3-> 8 -3-> 11 -2-> 14 -2-> 18 -> 21 -1->
-  // 25 -3-> 28 -2-> 31 -> 34 -2-> 37 -2-> 39 -> 42 -> 44 -3-> 46 -1->
-  // 48 (goal). 16 rolls, every value in 1..6, no roll can overshoot.
-  const DICE_SCRIPT = [4, 6, 6, 5, 6, 3, 5, 6, 5, 3, 5, 4, 3, 2, 5, 3];
+  // Deterministic roll script: the path lands on every event tile (in
+  // order) AND on several non-event tiles (where a "breather" modal is
+  // shown), and the final roll reaches the goal (tile 48). Every value
+  // is in 1..6 and no roll can overshoot the goal.
+  //
+  // Full path (L = landing tile, P = position after the event push-back):
+  //   1 ->3 ->5(-3)->2 ->8(-3)->5 ->10 ->11(-2)->9 ->14(-2)->12 ->16
+  //   ->18(0) ->21(0) ->25(-3)->22 ->28(-2)->26 ->30 ->31(0)
+  //   ->34(-2)->32 ->36 ->37(-2)->35 ->39(0) ->42(0) ->44(-3)->41
+  //   ->46(-1)->45 ->48 (goal)
+  // 21 rolls; non-event landings (breather): 3, 10, 16, 30, 36.
+  const DICE_SCRIPT = [2, 2, 6, 5, 1, 5, 4, 2, 3, 4, 6, 4, 1, 3, 4, 1, 4, 3, 2, 5, 3];
 
   // The 15 real events from Lucy-list.md, on fixed tiles.
   // kind: "bad" (pushed back), "neutral" (story only).
@@ -72,7 +78,7 @@
       effect: 0 },
     { tile: 21, emoji: "💍", title: "You are getting married!",
       text: "Congratulations! But time to rest is over: you organize the wedding while rehearsing your defense.",
-      effect: -1 },
+      effect: 0 },
     { tile: 25, emoji: "⚠️", title: "Threatened by local politicians",
       text: "The local politicians threaten you: you cannot dive or they will shoot you.",
       effect: -3 },
@@ -112,6 +118,7 @@
     busy: false,     // input locked while animating / modal open
     over: false,     // game finished (win or lose)
     run: 0,          // generation counter: invalidates stale timers on reset
+    modalKind: null, // "event" | "breather" | null (which modal is open)
   };
 
   // ---------- DOM ----------
@@ -120,8 +127,6 @@
   const diceEl = $("dice");
   const rollBtn = $("rollBtn");
   const restartBtn = $("restartBtn");
-  const tileLabel = $("tileLabel");
-  const progressLabel = $("progressLabel");
   const modalEl = $("modal");
   const modalBadge = $("modalBadge");
   const modalTitle = $("modalTitle");
@@ -154,6 +159,20 @@
     return { col, row };
   }
 
+  /**
+   * Arrow showing the direction of the journey out of this tile.
+   * The path snakes: even rows run left-to-right (→), odd rows run
+   * right-to-left (←), and the last tile of every row turns upward
+   * (↑) into the next row.
+   */
+  function pathArrow(tileNum) {
+    const idx = tileNum - 1;
+    const rowFromBottom = Math.floor(idx / BOARD_COLS);
+    const posInRow = idx % BOARD_COLS;
+    if (posInRow === BOARD_COLS - 1) return "↑";
+    return rowFromBottom % 2 === 0 ? "→" : "←";
+  }
+
   function buildBoard() {
     boardEl.innerHTML = "";
     tileEls = new Map();
@@ -178,15 +197,22 @@
         e.textContent = "🏆";
         li.appendChild(e);
       } else {
-        const num = document.createElement("span");
-        num.className = "tile-num";
-        num.textContent = String(i);
-        li.appendChild(num);
+        // Show the direction of the journey (a path arrow) instead of
+        // a tile number, so the snake path reads as a continuous road.
+        const arrow = document.createElement("span");
+        arrow.className = "tile-arrow";
+        arrow.textContent = pathArrow(i);
+        li.appendChild(arrow);
       }
 
       const ev = EVENT_BY_TILE[i];
       if (ev) {
         li.classList.add("has-event");
+        // Color the tile by the kind of event it triggers:
+        //   bad     (effect < 0) -> red
+        //   neutral (effect = 0) -> yellow
+        //   good    (effect > 0) -> green (unused in current data)
+        li.classList.add(ev.effect < 0 ? "tile-bad" : ev.effect > 0 ? "tile-good" : "tile-neutral");
         const mark = document.createElement("span");
         mark.className = "event-mark";
         mark.textContent = ev.emoji;
@@ -205,12 +231,6 @@
   }
 
   // ---------- status bar ----------
-  function updateStatus() {
-    tileLabel.textContent = `Tile ${state.pos} / ${TOTAL_TILES}`;
-    const pct = Math.round(((state.pos - 1) / (GOAL_TILE - 1)) * 100);
-    progressLabel.textContent = `${pct}% of the way to the defense`;
-  }
-
   function markVisited(tileNum) {
     const li = tileEls.get(tileNum);
     li.classList.add("tile-visited");
@@ -220,6 +240,13 @@
   function markCurrent(tileNum) {
     const li = tileEls.get(tileNum);
     li.classList.add("tile-current");
+  }
+
+  // The roll button is only visible/usable when the player may roll:
+  // hidden while the dice is rolling, the token is moving, or a modal
+  // is open (all of which keep state.busy true).
+  function syncRollButton() {
+    rollBtn.hidden = state.busy;
   }
 
   // ---------- token movement (animated, one tile per step) ----------
@@ -247,7 +274,6 @@
     markVisited(from);
     markCurrent(next);
     placeToken(next);
-    updateStatus();
     if (next === to) {
       onDone();
       return;
@@ -268,6 +294,7 @@
     if (state.busy || state.over) return;
     if (state.rollIndex >= DICE_SCRIPT.length) return;
     state.busy = true;
+    syncRollButton();
     const myRun = state.run;
     const result = DICE_SCRIPT[state.rollIndex];
     const start = state.pos;
@@ -302,7 +329,9 @@
             state.used.add(dest);
             showEventModal(ev);
           } else {
-            state.busy = false;
+            // No event on this tile (or it already fired): a quiet
+            // "breather" moment so the journey keeps its rhythm.
+            showBreatherModal();
           }
         });
       }
@@ -323,6 +352,7 @@
   function showEventModal(ev) {
     const myRun = state.run;
     const kind = ev.effect < 0 ? "bad" : ev.effect > 0 ? "good" : "neutral";
+    state.modalKind = "event";
     modalBadge.className = "modal-badge " + kind;
     modalBadge.textContent = kind === "bad" ? "Setback" : kind === "good" ? "Boost" : "Story";
     modalTitle.textContent = `${ev.emoji} ${ev.title}`;
@@ -336,6 +366,22 @@
     if (mark) mark.textContent = "✓";
   }
 
+  // A quiet "breather" shown when Lucy lands on a tile with no event.
+  // It keeps the journey's rhythm and reassures the player that the
+  // road ahead is clear for a moment.
+  function showBreatherModal() {
+    state.modalKind = "breather";
+    modalBadge.className = "modal-badge roll";
+    modalBadge.textContent = "Breather";
+    modalTitle.textContent = "🌤️ A quiet stretch of the road";
+    modalText.textContent =
+      "No surprises here — just the road ahead. Take a breath, " +
+      "gather your thoughts, and continue the journey to the defense.";
+    modalEffect.className = "modal-effect roll";
+    modalEffect.textContent = "No effect — the journey continues.";
+    modalEl.hidden = false;
+  }
+
   function closeModalAndApply(ev) {
     modalEl.hidden = true;
     const myRun = state.run;
@@ -343,6 +389,7 @@
     const to = Math.min(Math.max(from + ev.effect, 1), GOAL_TILE);
     if (to === from) {
       state.busy = false;
+      syncRollButton();
       return;
     }
     stepMove(from, to, () => {
@@ -353,6 +400,7 @@
         lose();
       } else {
         state.busy = false;
+        syncRollButton();
       }
     });
   }
@@ -375,10 +423,10 @@
   function win() {
     state.over = true;
     state.busy = true;
+    syncRollButton();
     markVisited(state.pos === GOAL_TILE ? GOAL_TILE - 1 : state.pos);
     markCurrent(GOAL_TILE);
     placeToken(GOAL_TILE);
-    updateStatus();
     winStats.textContent =
       `Thesis defended in ${state.rolls} rolls, ` +
       `${state.used.size} PhD events survived.`;
@@ -389,6 +437,7 @@
   function lose() {
     state.over = true;
     state.busy = true;
+    syncRollButton();
     markCurrent(1);
     loseSub.textContent =
       `A rough stretch pushed Lucy all the way back to tile 1 ` +
@@ -405,13 +454,14 @@
     state.rolls = 0;
     state.busy = false;
     state.over = false;
+    state.modalKind = null;
     modalEl.hidden = true;
     winOverlay.hidden = true;
     loseOverlay.hidden = true;
     buildBoard();
     markCurrent(1);
     setFace(1);
-    updateStatus();
+    syncRollButton();
   }
 
   // ---------- wiring ----------
@@ -423,10 +473,30 @@
     e.stopPropagation();
     reset();
   });
+  // Dismiss the open modal. Triggered by the Continue button OR by
+  // clicking anywhere on the overlay. For an event modal this also
+  // applies the event's movement effect; a breather modal simply
+  // closes and unlocks the next roll.
+  function dismissModal() {
+    if (modalEl.hidden) return;
+    if (state.modalKind === "event") {
+      const ev = EVENT_BY_TILE[state.pos];
+      if (ev) closeModalAndApply(ev);
+    } else if (state.modalKind === "breather") {
+      modalEl.hidden = true;
+      state.modalKind = null;
+      state.busy = false;
+      syncRollButton();
+    }
+  }
   modalBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const ev = EVENT_BY_TILE[state.pos];
-    if (ev && !modalEl.hidden) closeModalAndApply(ev);
+    dismissModal();
+  });
+  // Clicking anywhere on the overlay (outside the card) also dismisses.
+  modalEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dismissModal();
   });
   winBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -444,5 +514,5 @@
   // ---------- boot ----------
   buildBoard();
   markCurrent(1);
-  updateStatus();
+  syncRollButton();
 })();

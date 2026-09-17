@@ -27,19 +27,13 @@
   </header>
 
   <section class="statusbar">
-    <div class="status">
-      <span id="tileLabel" class="tile-label">Tile 1 / 48</span>
-      <span id="progressLabel" class="progress-label">0% of the way to the defense</span>
+    <div id="dice" class="dice face-1" role="img" aria-label="Dice showing 1">
+      <span class="pip tl"></span><span class="pip tr"></span><span class="pip c"></span>
+      <span class="pip ml"></span><span class="pip mr"></span><span class="pip bl"></span><span class="pip br"></span>
     </div>
-    <div class="dice-zone" aria-live="polite">
-      <div id="dice" class="dice face-1" role="img" aria-label="Dice showing 1">
-        <span class="pip tl"></span><span class="pip tr"></span><span class="pip c"></span>
-        <span class="pip ml"></span><span class="pip mr"></span><span class="pip bl"></span><span class="pip br"></span>
-      </div>
-      <div class="dice-side">
-        <button id="rollBtn" class="btn primary">Roll the dice (1–6)</button>
-        <p class="hint">Click anywhere to roll</p>
-      </div>
+    <div class="dice-side" aria-live="polite">
+      <button id="rollBtn" class="btn primary">Roll the dice (1–6)</button>
+      <p class="hint">Click anywhere to roll</p>
     </div>
   </section>
 
