@@ -1,1 +1,4 @@
 .idea
+*.zip
+.Rhistory
+.DS_Store
