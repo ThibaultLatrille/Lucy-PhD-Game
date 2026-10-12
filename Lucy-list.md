@@ -36,7 +36,8 @@
 
 [Philippines]
 
-  * You cannot dive or they will shoot you
+* [Philippines, hindrance] You are threatened by the local politicians
+* * You cannot dive or they will shoot yo
 * [Philippines, story] The boat breaks down
   * You are geared up but are stuck for 5h at sea
 * [Philippines, hindrance] Local authorities won't let you work

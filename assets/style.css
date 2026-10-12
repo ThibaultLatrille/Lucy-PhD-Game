@@ -177,6 +177,7 @@ body {
   position: relative;
   transform-style: preserve-3d;
   transition: transform 1.05s cubic-bezier(.25, .8, .3, 1);
+  pointer-events: none;
 }
 .dice-face {
   position: absolute;
@@ -245,14 +246,16 @@ body {
 }
 .modal {
   position: relative;
-  width: min(440px, 92vw);
+  width: fit-content;
+  max-width: 98vw;
+  max-height: 97vh;
+  overflow-y: auto;
   background: #ffffff;
   border-radius: 20px;
-  padding: 30px 26px 24px;
+  padding: 16px 24px 14px;
   text-align: center;
   box-shadow: 0 24px 60px rgba(15, 23, 42, .35);
   animation: popIn .3s cubic-bezier(.2, 1.4, .4, 1);
-  overflow: hidden;
 }
 .modal-accent { position: absolute; top: 0; left: 0; right: 0; height: 6px; background: #94a3b8; }
 .modal.type-hindrance .modal-accent { background: #ef4444; }
@@ -260,10 +263,10 @@ body {
 .modal.type-story .modal-accent { background: #3b82f6; }
 .modal.type-empty .modal-accent { background: #94a3b8; }
 
-.modal-flag { font-size: 14px; font-weight: 700; color: var(--muted); margin-top: 4px; }
-.modal-emoji { font-size: 52px; margin: 10px 0 4px; }
-.modal-title { margin: 4px 0 8px; font-size: 22px; }
-.modal-text { margin: 0 0 14px; color: #334155; line-height: 1.55; }
+.modal-flag { font-size: 13px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+.modal-emoji { font-size: 40px; margin: 6px 0 2px; }
+.modal-title { margin: 2px 0 6px; font-size: 20px; max-width: 640px; margin-inline: auto; }
+.modal-text { margin: 0 0 10px; color: #334155; line-height: 1.45; max-width: 640px; margin-inline: auto; }
 .modal-effect {
   display: inline-block;
   font-weight: 700;
@@ -275,6 +278,27 @@ body {
 }
 .modal.type-hindrance .modal-effect { background: #fee2e2; color: #b91c1c; }
 .modal.type-boost .modal-effect { background: #dcfce7; color: #15803d; }
+
+/* ---------- Modal image gallery ---------- */
+.modal-gallery {
+  margin: 0 0 16px;
+  display: grid;
+  gap: 10px;
+  animation: fadeIn .35s ease;
+}
+.modal-gallery[data-count="1"] { grid-template-columns: 1fr; }
+.modal-gallery[data-count="2"] { grid-template-columns: 1fr 1fr; }
+.modal-gallery[data-count="3"] { grid-template-columns: 1fr 1fr 1fr; }
+.modal-gallery img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 45vh;
+  object-fit: contain;
+  margin: 0 auto;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, .12);
+}
 
 .modal-btn {
   font-size: 16px;

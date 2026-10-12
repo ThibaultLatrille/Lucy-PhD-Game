@@ -8,7 +8,7 @@
       The dice is NOT random. `DICE_CHAIN` is a hand-tuned array of
       16 rolls (values 1-6) that, combined with the hindrance/boost
       effects, walks the player from tile 0 to tile 47 and triggers
-      all 18 events exactly once, in the order they appear in
+      all 20 events exactly once, in the order they appear in
       Lucy-list.md. This guarantees the "story" is always told the
       same way — important for a live presentation.
 
@@ -44,7 +44,7 @@ const BOARD_W = PAD * 2 + (COLS - 1) * STEP; // 910
 const BOARD_H = PAD * 2 + (ROWS - 1) * STEP; // 690
 
 // Zone definitions: contiguous tile ranges, each with a flag + tint class.
-// Switzerland appears twice (two separate trips) — same tint both times.
+// Switzerland appears three times (three separate trips) — same tint each time.
 const ZONES = [
   { id: "depart", flag: "🏁", name: "Départ",      from: 0,  to: 0,  cls: "z-depart" },
   { id: "swiss1", flag: "🇨🇭", name: "Switzerland", from: 1,  to: 8,  cls: "z-swiss" },
@@ -52,12 +52,35 @@ const ZONES = [
   { id: "thai",   flag: "🇹🇭", name: "Thailand",    from: 24, to: 24, cls: "z-thai" },
   { id: "swiss2", flag: "🇨🇭", name: "Switzerland", from: 25, to: 32, cls: "z-swiss" },
   { id: "ph",     flag: "🇵🇭", name: "Philippines", from: 33, to: 41, cls: "z-ph" },
-  { id: "tw",     flag: "🇹🇼", name: "Taiwan",      from: 42, to: 46, cls: "z-tw" },
+  { id: "tw",     flag: "🇹🇼", name: "Taiwan",      from: 42, to: 44, cls: "z-tw" },
+  { id: "swiss3", flag: "🇨🇭", name: "Switzerland", from: 45, to: 46, cls: "z-swiss" },
   { id: "end",    flag: "🎓", name: "The Defense", from: 47, to: 47, cls: "z-end" },
 ];
 
-// The 18 real events, in chronological order (from Lucy-list.md).
+// The 20 real events, in chronological order (from Lucy-list.md).
 // type: "hindrance" (effect < 0), "boost" (effect > 0), "story" (effect 0).
+//
+// Tile layout (48 tiles, 0-indexed):
+//   0  E0  🕊️  The Great Escape          (Départ)
+//   3  E1  ⛰️  Lab Outing                (Swiss 1, hindrance -2)
+//   6  E2  🌿  An Unlikely Fight         (Swiss 1, story)
+//   9  E3  🤿  Rusty Diving Gear         (Madagascar, hindrance -2)
+//  12  E4  📱  Phone Stolen              (Madagascar, hindrance -2)
+//  15  E5  🤢  Food Poisoning            (Madagascar, hindrance -2)
+//  18  E6  🪼  The Jellyfish             (Madagascar, story)
+//  21  E7  🦟  Fever & Dizziness         (Madagascar, hindrance -2)
+//  24  E8  🍻  Drinking Game             (Thailand, story)
+//  27  E9  🪳  Cockroach Invasion        (Swiss 2, hindrance -2)
+//  25  E10 📋  Proctoring an Exam        (Swiss 2, hindrance -2)  ← double-hindrance
+//  30  E11 📋  Mid-Thesis                (Swiss 2, story)
+//  33  E12 ⚠️  Politician Threats        (Philippines, hindrance -2)
+//  36  E13 🚤  The Boat Breaks Down      (Philippines, story)
+//  39  E14 🚫  Work Blocked              (Philippines, hindrance -2)
+//  42  E15 🐟  The Fish Conference       (Taiwan, boost +2)
+//  44  E16 🌋  Earthquake                (Taiwan, story)
+//  45  E17 🍹  Lab Day Off               (Swiss 3, boost +1)
+//  46  E18 💍  Getting Married           (Swiss 3, boost +1)
+//  47  E19 🎓  Thesis Defended!          (The Defense, story)
 const EVENTS = [
   { id: "E0",  tile: 0,  type: "story",     effect: 0,  emoji: "🕊️",  title: "The Great Escape",
     text: "You already escaped both the Kaust golden prison and Trump… the real journey begins." },
@@ -93,13 +116,35 @@ const EVENTS = [
     text: "You must attend the famous fish conference. Hops on the Hello Kitty plane!" },
   { id: "E16", tile: 44, type: "story",     effect: 0,  emoji: "🌋",  title: "Earthquake",
     text: "There is an earthquake. Never mind — pho and cocktails are the priority." },
-  { id: "E17", tile: 47, type: "story",     effect: 0,  emoji: "🎓",  title: "Thesis Defended!",
-    text: "You passed your thesis and you're flying off to a good vacation in Izmir — cocktails and beach." },
+  { id: "E17", tile: 45, type: "boost",     effect: 1,  emoji: "🍹",  title: "Lab Day Off",
+    text: "It's your turn to organise the lab day off. You choose to make them do cocktails." },
+  { id: "E18", tile: 46, type: "boost",     effect: 1,  emoji: "💍",  title: "Getting Married",
+    text: "You are getting married, congratulations! You still need to organise it at the same time as you rehearse your defense." },
+  { id: "E19", tile: 47, type: "story",     effect: 0,  emoji: "🎓",  title: "Thesis Defended!",
+    text: "You passed your thesis and you're flying off to a well-earned vacation in Izmir — cocktails and beach. 🍹🏖️" },
 ];
 
 // Hand-tuned deterministic dice chain (16 rolls). Verified to trigger all
-// 18 events in order, with the double-hindrance at roll 9 (E9 -> E10).
-const DICE_CHAIN = [3, 5, 3, 5, 5, 5, 3, 5, 3, 5, 2, 3, 5, 3, 5, 3];
+// 20 events in order, with the double-hindrance at roll 9 (E9 -> E10).
+//
+//   Start:  position 0 → E0 fires (story)
+//   Roll  1:  0 +3 =  3  → E1  (hindrance -2 → 1)
+//   Roll  2:  1 +5 =  6  → E2  (story)
+//   Roll  3:  6 +3 =  9  → E3  (hindrance -2 → 7)
+//   Roll  4:  7 +5 = 12  → E4  (hindrance -2 → 10)
+//   Roll  5: 10 +5 = 15  → E5  (hindrance -2 → 13)
+//   Roll  6: 13 +5 = 18  → E6  (story)
+//   Roll  7: 18 +3 = 21  → E7  (hindrance -2 → 19)
+//   Roll  8: 19 +5 = 24  → E8  (story)
+//   Roll  9: 24 +3 = 27  → E9  (hindrance -2 → 25) → E10 fires (hindrance -2 → 23)
+//   Roll 10: 23 +5 = 28  → breathe (no event)
+//   Roll 11: 28 +2 = 30  → E11 (story)
+//   Roll 12: 30 +3 = 33  → E12 (hindrance -2 → 31)
+//   Roll 13: 31 +5 = 36  → E13 (story)
+//   Roll 14: 36 +3 = 39  → E14 (hindrance -2 → 37)
+//   Roll 15: 37 +5 = 42  → E15 (boost +2 → 44) → E16 fires (story)
+//   Roll 16: 44 +1 = 45  → E17 (boost +1 → 46) → E18 fires (boost +1 → 47) → E19 fires (story) → GAME OVER
+const DICE_CHAIN = [3, 5, 3, 5, 5, 5, 3, 5, 3, 5, 2, 3, 5, 3, 5, 1];
 
 // Dice face pip layouts (3x3 grid, 1 = pip shown).
 const PIPS = {
@@ -148,6 +193,7 @@ const modalTitle = document.getElementById("modal-title");
 const modalText = document.getElementById("modal-text");
 const modalEffect = document.getElementById("modal-effect");
 const modalBtn = document.getElementById("modal-btn");
+const modalGallery = document.getElementById("modal-gallery");
 const finaleEl = document.getElementById("finale");
 const confettiEl = document.getElementById("confetti");
 const restartBtn = document.getElementById("restart-btn");
@@ -349,7 +395,7 @@ function moveToken(toIndex, done) {
 
 /* --------------------------- Modals ----------------------------- */
 
-function showModal(type, flag, emoji, title, text, effectText, onContinue) {
+function showModal(type, flag, emoji, title, text, effectText, onContinue, images) {
   modalEl.className = "modal type-" + type;
   modalFlag.textContent = flag;
   modalEmoji.textContent = emoji;
@@ -361,6 +407,10 @@ function showModal(type, flag, emoji, title, text, effectText, onContinue) {
   } else {
     modalEffect.classList.add("hidden");
   }
+
+  // Populate the image gallery (if images are provided).
+  populateGallery(images);
+
   modalOverlay.classList.remove("hidden");
   modalBtn.onclick = () => {
     modalOverlay.classList.add("hidden");
@@ -368,12 +418,38 @@ function showModal(type, flag, emoji, title, text, effectText, onContinue) {
   };
 }
 
+/**
+ * Populate the modal image gallery (up to 3 images, side by side).
+ * @param {string[]|undefined} images - Array of image paths, or undefined/empty.
+ */
+function populateGallery(images) {
+  modalGallery.innerHTML = "";
+
+  if (!images || images.length === 0) {
+    modalGallery.classList.add("hidden");
+    return;
+  }
+
+  modalGallery.classList.remove("hidden");
+
+  // Show up to 3 images side by side.
+  const shown = images.slice(0, 3);
+  modalGallery.dataset.count = shown.length;
+  shown.forEach((src, idx) => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = `Photo ${idx + 1}`;
+    modalGallery.appendChild(img);
+  });
+}
+
 function showEventModal(ev, onContinue) {
   const zone = zoneForTile(ev.tile);
   let effectText = "";
   if (ev.type === "hindrance") effectText = `Pushed back ${Math.abs(ev.effect)} tiles`;
   if (ev.type === "boost") effectText = `Pushed forward ${ev.effect} tiles`;
-  showModal(ev.type, `${zone.flag} ${zone.name}`, ev.emoji, ev.title, ev.text, effectText, onContinue);
+  const images = (typeof EVENT_IMAGES !== "undefined") ? EVENT_IMAGES[ev.id] : undefined;
+  showModal(ev.type, `${zone.flag} ${zone.name}`, ev.emoji, ev.title, ev.text, effectText, onContinue, images);
 }
 
 function showBreatheModal(onContinue) {
@@ -384,7 +460,8 @@ function showBreatheModal(onContinue) {
     "Take a breath",
     "Nothing happens here. Catch your breath, enjoy the view, and continue the journey.",
     "",
-    onContinue
+    onContinue,
+    ["images/Breather - 1.jpg"]
   );
 }
 
@@ -405,7 +482,7 @@ function rollDice() {
   statusEl.textContent = `Rolling…`;
 
   animateDice(value, () => {
-    const target = position + value;
+    const target = Math.min(position + value, TILE_COUNT - 1);
     statusEl.textContent = `Rolled a ${value}!`;
     moveToken(target, () => {
       position = target;

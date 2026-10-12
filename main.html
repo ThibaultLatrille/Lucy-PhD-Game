@@ -10,13 +10,21 @@
 <body>
 
   <!--
-    Lucy's PhD Journey — board game (proof of concept)
+    Lucy's PhD Journey — board game
 
     Libraries / frameworks used: NONE.
     Deliberate choice: pure vanilla HTML + CSS + JS so the page works fully
     offline (no CDN), which matters for a live presentation. All "heavy"
-    effects (3D dice, winding path, confetti) are done with CSS transforms,
-    SVG and small JS helpers — see assets/script.js and assets/style.css.
+    effects (3D dice, winding path, confetti, image gallery) are done with
+    CSS transforms, SVG and small JS helpers — see assets/script.js and
+    assets/style.css.
+
+    Image system:
+      Event photos are mapped to events in assets/images-manifest.js.
+      To add/remove photos for an event, edit ONLY that manifest file —
+      no changes to script.js or style.css are needed. The modal renders
+      a main image plus a clickable thumbnail strip when an event has
+      multiple photos.
   -->
 
   <header class="topbar">
@@ -58,6 +66,8 @@
       <div class="modal-emoji" id="modal-emoji"></div>
       <h2 class="modal-title" id="modal-title"></h2>
       <p class="modal-text" id="modal-text"></p>
+      <!-- Image gallery: populated dynamically from the image manifest -->
+      <div class="modal-gallery hidden" id="modal-gallery"></div>
       <div class="modal-effect hidden" id="modal-effect"></div>
       <button class="modal-btn" id="modal-btn">Continue</button>
     </div>
@@ -77,6 +87,9 @@
     </div>
   </div>
 
+  <!-- Image manifest: maps event IDs to photo file paths.
+       Edit this file to add/remove images without touching game code. -->
+  <script src="assets/images-manifest.js"></script>
   <script src="assets/script.js"></script>
 </body>
 </html>
