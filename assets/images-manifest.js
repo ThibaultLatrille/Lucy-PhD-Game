@@ -21,112 +21,117 @@
    ============================================================ */
 
 const EVENT_IMAGES = {
-  // E0 — The Great Escape (Départ)
   E0: [
-    "images/E0 - The Great Escape - 1.jpg",
+    "images/The Great Escape - 1.jpg",
   ],
 
   // E1 — Lab Outing (Switzerland 1)
   E1: [
-    "images/E1 - Lab outing - 1.jpg",
-    "images/E1 - Lab outing - 2.jpg",
+    "images/Z1 - Swiss - Lab outing - 1.jpg",
+    "images/Z1 - Swiss - Lab outing - 2.jpg",
   ],
 
   // E2 — An Unlikely Fight (Switzerland 1)
   E2: [
-    "images/E2 - An Unlikely Fight - 1.jpg",
+    "images/Z1 - Swiss - Weed - 1.jpg",
   ],
 
-  // E3 — Rusty Diving Gear (Madagascar)
+  // E3 — Drinking Game (Thailand)
   E3: [
-    "images/E3 - Rusty Diving Gear - 1.jpg",
+    "images/Z2 - Thailand - 1.jpg",
+    "images/Z2 - Thailand - 2.jpg",
   ],
 
-  // E4 — Phone Stolen (Madagascar)
+  // E4 — The Jellyfish (Thailand)
   E4: [
-    "images/E4 - Phone Stolen - 1.jpg",
+    "images/Z2 - Thailand - 1.jpg",
+    "images/Z2 - Thailand - 2.jpg",
   ],
 
-  // E5 — Food Poisoning (Madagascar)
+  // E5 — Bitten by a Stray Dog (Thailand)
   E5: [
-    "images/E5 - Food Poisoning - 1.jpg",
+    "images/Z2 - Thailand - 1.jpg",
+    "images/Z2 - Thailand - 2.jpg",
   ],
 
-  // E6 — The Jellyfish (Madagascar)
+  // E6 — Rusty Diving Gear (Madagascar)
   E6: [
-    "images/E6 - The Jellyfish - 1.jpg",
+    "images/Z3 - Madagascar - 1.jpg",
   ],
 
-  // E7 — Fever & Dizziness (Madagascar)
+  // E7 — Phone Stolen (Madagascar)
   E7: [
-    "images/E7 - Fever & Dizziness - 1.jpg",
+    "images/Z3 - Madagascar - 2.jpg",
   ],
 
-  // E8 — Drinking Game (Thailand)
+  // E8 — Food Poisoning (Madagascar)
   E8: [
-    "images/E8 - Thailand - Drinking game - 1.jpg",
-    "images/E8 - Thailand - Drinking game - 2.jpg",
+    "images/Z3 - Madagascar - 3.jpg",
   ],
 
-  // E9 — Cockroach Invasion (Switzerland 2)
+  // E9 — Fever & Dizziness (Madagascar)
   E9: [
-    "images/E9 - Cockroach invasion - 1.jpg",
-    "images/E9 - Cockroach invasion - 2.jpg",
-    "images/E9 - Cockroach invasion - 3.jpg",
+    "images/Z3 - Madagascar - 4.jpg",
+    "images/Z3 - Madagascar - 5.jpg",
   ],
 
-  // E10 — Proctoring an Exam (Switzerland 2)
+  // E10 — Cockroach Invasion (Switzerland 2)
   E10: [
-    "images/E10 - Proctoring an Exam - 1.jpg",
+    "images/Z4 - Swiss - Cockroach - 1.jpg",
   ],
 
-  // E11 — Mid-Thesis (Switzerland 2)
+  // E11 — Proctoring an Exam (Switzerland 2)
   E11: [
-    "images/E11 - Mid Thesis - 1.jpg",
+    "images/Z4 - Swiss - Proctoring an Exam - 1.jpg",
   ],
 
-  // E12 — Politician Threats (Philippines)
+  // E12 — Mid-Thesis (Switzerland 2)
   E12: [
-    "images/E12 - Politician threats - 1.jpg",
+    "images/Z4 - Swiss - Mid Thesis - 1.jpg",
   ],
 
-  // E13 — The Boat Breaks Down (Philippines)
+  // E13 — Politician Threats (Philippines)
   E13: [
-    "images/E13 - The Boat Breaks Down - 1.jpg",
+    "images/Z5 - Philippines - Politician threats - 1.jpg",
   ],
 
-  // E14 — Work Blocked (Philippines)
+  // E14 — The Boat Breaks Down (Philippines)
   E14: [
-    "images/E14 - Work Blocked - 1.jpg",
+    "images/Z5 - Philippines - The Boat Breaks Down - 1.jpg",
   ],
 
-  // E15 — The Fish Conference (Taiwan)
+  // E15 — Work Blocked (Philippines)
   E15: [
-    "images/E15 - The Fish Conference - 1.jpg",
-    "images/E15 - The Fish Conference - 2.jpg",
-    "images/E15 - The Fish Conference - 3.jpg",
+    "images/Z5 - Philippines - Octopus - 1.jpg",
   ],
 
-  // E16 — Earthquake (Taiwan)
+  // E16 — The Fish Conference (Taiwan)
   E16: [
-    "images/E16 - Earthquake - 1.jpg",
+    "images/Z6 - Taiwan - The Fish Conference - 1.jpg",
+    "images/Z6 - Taiwan - The Fish Conference - 2.jpg",
+    "images/Z6 - Taiwan - The Fish Conference - 3.jpg",
   ],
 
-  // E17 — Lab Day Off (Switzerland 3)
+  // E17 — Earthquake (Taiwan)
   E17: [
-    "images/E17 - Lab Day Off - 1.jpg",
-    "images/E17 - Lab Day Off - 2.jpg",
-    "images/E17 - Lab Day Off - 3.jpg",
+    "images/Z6 - Taiwan - Earthquake - 1.jpg",
   ],
 
-  // E18 — Getting Married (Switzerland 3)
+  // E18 — Lab Day Off (Switzerland 3)
   E18: [
-    "images/E18 - Getting Married - 1.jpg",
-    "images/E18 - Getting Married - 2.jpg",
+    "images/Z7 - Swiss - Lab Day Off - 1.jpg",
+    "images/Z7 - Swiss - Lab Day Off - 2.jpg",
+    "images/Z7 - Swiss - Lab Day Off - 3.jpg",
   ],
 
-  // E19 — Thesis Defended! (The Defense)
+  // E19 — Getting Married (Switzerland 3)
   E19: [
-    "images/E19 - Thesis Defended! - 1.jpg",
+    "images/Z7 - Swiss - Getting Married - 1.jpg",
+    "images/Z7 - Swiss - Getting Married - 2.jpg",
+  ],
+
+  // E20 — Thesis Defended! (The Defense)
+  E20: [
+    "images/Thesis Defended! - 1.jpg",
   ],
 };

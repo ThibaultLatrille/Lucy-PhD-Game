@@ -40,6 +40,15 @@ Read them in depth to understand the project, what is done and how is implemente
 Now do the following:
 
 - There has been an update in the events, the new file that contains the up-to-date events is Lucy-list-v1.md. Use this list, lookup for the difference. Mainly it is about Thailand being before Madagascar, and one event mislabel (was Madagascar but is in fact Thailand). Reorganize the events to match this updated list and modify the necessary files in accordance. For Thailand images, you shall use the same images as from the previous thailand event.
+- Several problems, first the 3d dice doesn't match what was actually rolled.
+- Some push backs make you fall on a event which should have been triggered (but they are not), so make sure that after a push back you  don't land on an event (but only once in a game, where you managed to go over an event, and then are pushed back to it afterward):
+  1. All events are encountered in order.
+  2. Every forward dice roll lands exactly on its target event (or a breathe tile).
+  3. Push-backs and boosts do NOT land on event tiles (no token sitting on an event that either fires unexpectedly or silently no-ops).
+  4. EXCEPT the one double-hindrance: skip an event forward, push back onto it, it fires.
+- The first modal should say "Let's begin".
+- The last one should not have a continue or start again. It is finished.
+- Switzerland should be white, Madagascar red
 
 Run and test the implemented changes.
 Make sure the game is working well and tested locally.
