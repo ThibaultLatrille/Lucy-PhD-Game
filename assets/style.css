@@ -116,8 +116,8 @@ body {
 
 /* Zone tints — each category's tiles share a background + border */
 .tile.z-depart { --tint: #f1f5f9; --border: #94a3b8; }
-.tile.z-swiss  { --tint: #fee2e2; --border: #f87171; }
-.tile.z-mada   { --tint: #dcfce7; --border: #4ade80; }
+.tile.z-swiss  { --tint: #ffffff; --border: #cbd5e1; }
+.tile.z-mada   { --tint: #fee2e2; --border: #f87171; }
 .tile.z-thai   { --tint: #dbeafe; --border: #60a5fa; }
 .tile.z-ph     { --tint: #f3e8ff; --border: #c084fc; }
 .tile.z-tw     { --tint: #ffedd5; --border: #fb923c; }

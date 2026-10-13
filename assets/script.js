@@ -6,7 +6,7 @@
    --------------------
    1. DETERMINISTIC DICE
       The dice is NOT random. `DICE_CHAIN` is a hand-tuned array of
-      17 rolls (values 1-6) that, combined with the hindrance/boost
+      18 rolls (values 1-6) that, combined with the hindrance/boost
      effects, walks the player from tile 0 to tile 47 and triggers
      all 21 events exactly once, in the order they appear in
      Lucy-list-v1.md. This guarantees the "story" is always told the
@@ -60,23 +60,24 @@ const ZONES = [
 // The 21 real events, in chronological order (from Lucy-list-v1.md).
 // type: "hindrance" (effect < 0), "boost" (effect > 0), "story" (effect 0).
 //
-// Tile layout (48 tiles, 0-indexed):
+// Tile layout (48 tiles, 0-indexed). Every hindrance push-back (-2) stays
+// inside its own zone (no push-back leaves a zone).
 //   0  E0  🕊️  Let's Begin                 (Départ)
 //   4  E1  ⛰️  Lab Outing                  (Swiss 1, hindrance -2)
 //   6  E2  🌿  An Unlikely Fight           (Swiss 1, story)
 //   9  E3  🍻  Drinking Game               (Thailand, story)
 //  11  E4  🪼  The Jellyfish               (Thailand, story)
 //  14  E5  🐕  Stray Dog Bite              (Thailand, hindrance -2)
-//  17  E6  🤿  Rusty Diving Gear           (Madagascar, hindrance -2)
-//  20  E7  📱  Phone Stolen                (Madagascar, hindrance -2)
-//  21  E8  🤢  Food Poisoning              (Madagascar, hindrance -2)
-//  24  E9  🦟  Fever & Dizziness           (Madagascar, hindrance -2)
-//  27  E10 🪳  Cockroach Invasion          (Swiss 2, hindrance -2)
-//  25  E11 📋  Proctoring an Exam          (Swiss 2, hindrance -2)  ← double-hindrance
+//  18  E6  🤿  Rusty Diving Gear           (Madagascar, hindrance -2)
+//  21  E7  📱  Phone Stolen                (Madagascar, hindrance -2)
+//  22  E8  🤢  Food Poisoning              (Madagascar, hindrance -2)
+//  24  E9  🦟  Fever & Dizziness           (Madagascar, hindrance -2)  ← double-hindrance
+//  29  E10 🪳  Cockroach Invasion          (Swiss 2, hindrance -2)
+//  27  E11 📋  Proctoring an Exam          (Swiss 2, hindrance -2)
 //  28  E12 📋  Mid-Thesis                  (Swiss 2, story)
-//  33  E13 ⚠️  Politician Threats          (Philippines, hindrance -2)
-//  34  E14 🚤  The Boat Breaks Down        (Philippines, story)
-//  38  E15 🚫  Work Blocked                (Philippines, hindrance -2)
+//  36  E13 ⚠️  Politician Threats          (Philippines, hindrance -2)
+//  37  E14 🚤  The Boat Breaks Down        (Philippines, story)
+//  40  E15 🚫  Work Blocked                (Philippines, hindrance -2)
 //  42  E16 🐟  The Fish Conference         (Taiwan, boost +2)
 //  44  E17 🌋  Earthquake                  (Taiwan, story)
 //  45  E18 🍹  Lab Day Off                 (Swiss 3, boost +1)
@@ -95,25 +96,25 @@ const EVENTS = [
     text: "You swallow a jellyfish in the middle of a dive. Spit it out — somehow, it's fine." },
   { id: "E5",  tile: 14, type: "hindrance", effect: -2, emoji: "🐕",  title: "Bitten by a Stray Dog",
     text: "Your local collaborator pets every stray dog and inevitably gets bitten. You lose a day — she decided to risk rabies instead of telling you." },
-  { id: "E6",  tile: 17, type: "hindrance", effect: -2, emoji: "🤿",  title: "Rusty Diving Gear",
+  { id: "E6",  tile: 18, type: "hindrance", effect: -2, emoji: "🤿",  title: "Rusty Diving Gear",
     text: "The diving material is quite rusty. The tank leaks, out of air — abort diving." },
-  { id: "E7",  tile: 20, type: "hindrance", effect: -2, emoji: "📱",  title: "Phone Stolen",
+  { id: "E7",  tile: 21, type: "hindrance", effect: -2, emoji: "📱",  title: "Phone Stolen",
     text: "Your phone gets stolen. The police won't help — you can track it yourself and negotiate with the thief." },
-  { id: "E8",  tile: 21, type: "hindrance", effect: -2, emoji: "🤢",  title: "Food Poisoning",
+  { id: "E8",  tile: 22, type: "hindrance", effect: -2, emoji: "🤢",  title: "Food Poisoning",
     text: "A food-poisoning trap. You contract diarrhea — diving suddenly gets more complex." },
-  { id: "E9",  tile: 24, type: "hindrance", effect: -2, emoji: "🦟",  title: "Fever & Dizziness",
+  { id: "E9",  tile: 24, type: "hindrance", effect: -1, emoji: "🦟",  title: "Fever & Dizziness",
     text: "Suspected malaria. Choose between a local hospital (risk further infections) or hope for the best." },
-  { id: "E10", tile: 27, type: "hindrance", effect: -2, emoji: "🪳",  title: "Cockroach Invasion",
+  { id: "E10", tile: 29, type: "hindrance", effect: -2, emoji: "🪳",  title: "Cockroach Invasion",
     text: "Construction work in the neighbourhood: cockroach invasion in the apartment. No sleep for a few nights." },
-  { id: "E11", tile: 25, type: "hindrance", effect: -2, emoji: "📋",  title: "Proctoring an Exam",
+  { id: "E11", tile: 27, type: "hindrance", effect: -2, emoji: "📋",  title: "Proctoring an Exam",
     text: "An 'easy day' proctoring an exam. You catch students cheating — lots of paperwork to fill." },
   { id: "E12", tile: 28, type: "story",     effect: 0,  emoji: "📋",  title: "Mid-Thesis",
     text: "It's the mid-thesis. You get cooked on the theory questions." },
-  { id: "E13", tile: 33, type: "hindrance", effect: -2, emoji: "⚠️",  title: "Politician Threats",
+  { id: "E13", tile: 36, type: "hindrance", effect: -2, emoji: "⚠️",  title: "Politician Threats",
     text: "Threatened by local politicians: 'You cannot dive or they will shoot you.'" },
-  { id: "E14", tile: 34, type: "story",     effect: 0,  emoji: "🚤",  title: "The Boat Breaks Down",
+  { id: "E14", tile: 37, type: "story",     effect: 0,  emoji: "🚤",  title: "The Boat Breaks Down",
     text: "Geared up and ready — but stuck for 5 hours at sea when the boat breaks down." },
-  { id: "E15", tile: 38, type: "hindrance", effect: -2, emoji: "🚫",  title: "Work Blocked",
+  { id: "E15", tile: 40, type: "hindrance", effect: -2, emoji: "🚫",  title: "Work Blocked",
     text: "Local authorities won't let you work. Never mind, go see the flamboyant octopus." },
   { id: "E16", tile: 42, type: "boost",     effect: 2,  emoji: "🐟",  title: "The Fish Conference",
     text: "You must attend the famous fish conference. Hops on the Hello Kitty plane!" },
@@ -124,11 +125,12 @@ const EVENTS = [
   { id: "E19", tile: 46, type: "boost",     effect: 1,  emoji: "💍",  title: "Getting Married",
     text: "You are getting married, congratulations! You still need to organise it at the same time as you rehearse your defense." },
   { id: "E20", tile: 47, type: "story",     effect: 0,  emoji: "🎓",  title: "Thesis Defended!",
-    text: "You passed your thesis and you're flying off to a well-earned vacation in Izmir — cocktails and beach. 🍹🏖️" },
+    text: "You passed your thesis and you're flying off to a well-earned vacation. 🍹🏖️" },
 ];
 
-// Hand-tuned deterministic dice chain (17 rolls). Verified to trigger all
-// 21 events in order, with the double-hindrance at roll 10 (E10 → E11).
+// Hand-tuned deterministic dice chain (18 rolls). Verified to trigger all
+// 21 events in order, with the double-hindrance at roll 11 (E10 → E11).
+// No hindrance push-back ever leaves its own zone.
 //
 //   Start:  position 0 → E0 fires (story)
 //   Roll  1:  0 +4 =  4  → E1  (hindrance -2 → 2)
@@ -136,19 +138,20 @@ const EVENTS = [
 //   Roll  3:  6 +3 =  9  → E3  (story)
 //   Roll  4:  9 +2 = 11  → E4  (story)
 //   Roll  5: 11 +3 = 14  → E5  (hindrance -2 → 12)
-//   Roll  6: 12 +5 = 17  → E6  (hindrance -2 → 15)
-//   Roll  7: 15 +5 = 20  → E7  (hindrance -2 → 18)
-//   Roll  8: 18 +3 = 21  → E8  (hindrance -2 → 19)
-//   Roll  9: 19 +5 = 24  → E9  (hindrance -2 → 22)
-//   Roll 10: 22 +5 = 27  → E10 (hindrance -2 → 25) → E11 fires (hindrance -2 → 23)
-//   Roll 11: 23 +3 = 26  → breathe (no event)
-//   Roll 12: 26 +2 = 28  → E12 (story)
-//   Roll 13: 28 +5 = 33  → E13 (hindrance -2 → 31)
-//   Roll 14: 31 +3 = 34  → E14 (story)
-//   Roll 15: 34 +4 = 38  → E15 (hindrance -2 → 36)
-//   Roll 16: 36 +6 = 42  → E16 (boost +2 → 44) → E17 fires (story)
-//   Roll 17: 44 +1 = 45  → E18 (boost +1 → 46) → E19 fires (boost +1 → 47) → E20 fires (story) → GAME OVER
-const DICE_CHAIN = [4, 4, 3, 2, 3, 5, 5, 3, 5, 5, 3, 2, 5, 3, 4, 6, 1];
+//   Roll  6: 12 +6 = 18  → E6  (hindrance -2 → 16)
+//   Roll  7: 16 +5 = 21  → E7  (hindrance -2 → 19)
+//   Roll  8: 19 +3 = 22  → E8  (hindrance -2 → 20)
+//   Roll  9: 20 +4 = 24  → E9  (hindrance -1 → 23)
+//   Roll 10: 23 +3 = 26  → breathe (no event)
+//   Roll 11: 26 +3 = 29  → E10 (hindrance -2 → 27) → E11 fires (hindrance -2 → 25)
+//   Roll 12: 25 +3 = 28  → E12 (story)
+//   Roll 13: 28 +5 = 33  → breathe (no event)
+//   Roll 14: 33 +3 = 36  → E13 (hindrance -2 → 34)
+//   Roll 15: 34 +3 = 37  → E14 (story)
+//   Roll 16: 37 +3 = 40  → E15 (hindrance -2 → 38)
+//   Roll 17: 38 +4 = 42  → E16 (boost +2 → 44) → E17 fires (story)
+//   Roll 18: 44 +1 = 45  → E18 (boost +1 → 46) → E19 fires (boost +1 → 47) → E20 fires (story) → GAME OVER
+const DICE_CHAIN = [4, 4, 3, 2, 3, 6, 5, 3, 4, 3, 3, 3, 5, 3, 3, 3, 4, 1];
 
 // Dice face pip layouts (3x3 grid, 1 = pip shown).
 const PIPS = {
