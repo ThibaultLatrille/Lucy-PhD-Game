@@ -30,7 +30,7 @@ The goal of the game is the following:
 
 We already have a proof of concept and generated these three files:
 
-- main.html that will be the main page of the game.
+- index.html that will be the main page of the game.
 - assets/script.js that will contain the game logic.
 - assets/images-manifest.js
 - assets/style.css that will contain the game styles.
