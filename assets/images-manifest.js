@@ -39,19 +39,18 @@ const EVENT_IMAGES = {
   // E3 — Drinking Game (Thailand)
   E3: [
     "images/Z2 - Thailand - 1.jpg",
-    "images/Z2 - Thailand - 2.jpg",
   ],
 
   // E4 — The Jellyfish (Thailand)
   E4: [
-    "images/Z2 - Thailand - 1.jpg",
     "images/Z2 - Thailand - 2.jpg",
+    "images/Z2 - Thailand - 3.jpg",
+    "images/Z2 - Thailand - 4.jpg",
   ],
 
   // E5 — Bitten by a Stray Dog (Thailand)
   E5: [
-    "images/Z2 - Thailand - 1.jpg",
-    "images/Z2 - Thailand - 2.jpg",
+    "images/Z2 - Thailand - 5.jpg",
   ],
 
   // E6 — Rusty Diving Gear (Madagascar)
@@ -67,11 +66,11 @@ const EVENT_IMAGES = {
   // E8 — Food Poisoning (Madagascar)
   E8: [
     "images/Z3 - Madagascar - 3.jpg",
+    "images/Z3 - Madagascar - 4.jpg",
   ],
 
   // E9 — Fever & Dizziness (Madagascar)
   E9: [
-    "images/Z3 - Madagascar - 4.jpg",
     "images/Z3 - Madagascar - 5.jpg",
   ],
 
@@ -103,6 +102,8 @@ const EVENT_IMAGES = {
   // E15 — Work Blocked (Philippines)
   E15: [
     "images/Z5 - Philippines - Octopus - 1.jpg",
+    "images/Z5 - Philippines - Octopus - 2.jpg",
+    "images/Z5 - Philippines - Octopus - 3.jpg",
   ],
 
   // E16 — The Fish Conference (Taiwan)
@@ -128,10 +129,5 @@ const EVENT_IMAGES = {
   E19: [
     "images/Z7 - Swiss - Getting Married - 1.jpg",
     "images/Z7 - Swiss - Getting Married - 2.jpg",
-  ],
-
-  // E20 — Thesis Defended! (The Defense)
-  E20: [
-    "images/Thesis Defended! - 1.jpg",
   ],
 };

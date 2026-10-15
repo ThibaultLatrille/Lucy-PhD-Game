@@ -125,7 +125,7 @@ const EVENTS = [
   { id: "E19", tile: 46, type: "boost",     effect: 1,  emoji: "💍",  title: "Getting Married",
     text: "You are getting married, congratulations! You still need to organise it at the same time as you rehearse your defense." },
   { id: "E20", tile: 47, type: "story",     effect: 0,  emoji: "🎓",  title: "Thesis Defended!",
-    text: "You passed your thesis and you're flying off to a well-earned vacation. 🍹🏖️" },
+    text: "You defend your thesis successfully." },
 ];
 
 // Hand-tuned deterministic dice chain (18 rolls). Verified to trigger all
@@ -138,20 +138,21 @@ const EVENTS = [
 //   Roll  3:  6 +3 =  9  → E3  (story)
 //   Roll  4:  9 +2 = 11  → E4  (story)
 //   Roll  5: 11 +3 = 14  → E5  (hindrance -2 → 12)
-//   Roll  6: 12 +6 = 18  → E6  (hindrance -2 → 16)
-//   Roll  7: 16 +5 = 21  → E7  (hindrance -2 → 19)
-//   Roll  8: 19 +3 = 22  → E8  (hindrance -2 → 20)
-//   Roll  9: 20 +4 = 24  → E9  (hindrance -1 → 23)
-//   Roll 10: 23 +3 = 26  → breathe (no event)
-//   Roll 11: 26 +3 = 29  → E10 (hindrance -2 → 27) → E11 fires (hindrance -2 → 25)
-//   Roll 12: 25 +3 = 28  → E12 (story)
-//   Roll 13: 28 +5 = 33  → breathe (no event)
-//   Roll 14: 33 +3 = 36  → E13 (hindrance -2 → 34)
-//   Roll 15: 34 +3 = 37  → E14 (story)
-//   Roll 16: 37 +3 = 40  → E15 (hindrance -2 → 38)
-//   Roll 17: 38 +4 = 42  → E16 (boost +2 → 44) → E17 fires (story)
-//   Roll 18: 44 +1 = 45  → E18 (boost +1 → 46) → E19 fires (boost +1 → 47) → E20 fires (story) → GAME OVER
-const DICE_CHAIN = [4, 4, 3, 2, 3, 6, 5, 3, 4, 3, 3, 3, 5, 3, 3, 3, 4, 1];
+//   Roll  6: 12 +5 = 17  → breathe (no event)
+//   Roll  7: 17 +1 = 18  → E6  (hindrance -2 → 16)
+//   Roll  8: 16 +5 = 21  → E7  (hindrance -2 → 19)
+//   Roll  9: 19 +3 = 22  → E8  (hindrance -2 → 20)
+//   Roll 10: 20 +4 = 24  → E9  (hindrance -1 → 23)
+//   Roll 11: 23 +3 = 26  → breathe (no event)
+//   Roll 12: 26 +3 = 29  → E10 (hindrance -2 → 27) → E11 fires (hindrance -2 → 25)
+//   Roll 13: 25 +3 = 28  → E12 (story)
+//   Roll 14: 28 +5 = 33  → breathe (no event)
+//   Roll 15: 33 +3 = 36  → E13 (hindrance -2 → 34)
+//   Roll 16: 34 +3 = 37  → E14 (story)
+//   Roll 17: 37 +3 = 40  → E15 (hindrance -2 → 38)
+//   Roll 18: 38 +4 = 42  → E16 (boost +2 → 44) → E17 fires (story)
+//   Roll 19: 44 +1 = 45  → E18 (boost +1 → 46) → E19 fires (boost +1 → 47) → E20 fires (story) → GAME OVER
+const DICE_CHAIN = [4, 4, 3, 2, 3, 5, 1, 5, 3, 4, 3, 3, 3, 5, 3, 3, 3, 4, 1];
 
 // Dice face pip layouts (3x3 grid, 1 = pip shown).
 const PIPS = {
